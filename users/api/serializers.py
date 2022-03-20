@@ -9,5 +9,18 @@ class UserSerializer(serializers.ModelSerializer):
             'name',
             'email',
             'birthDate',
-            'password'
+            'password',
+            'avatar',
+            'score',
         )
+
+class UserRankingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields = (
+            'username',
+            'name',
+            'score',
+            'avatar',
+        )
+

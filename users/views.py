@@ -1,11 +1,9 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from users.api.serializers import UserSerializer
+from users.api.serializers import UserRankingSerializer, UserSerializer
 from users.models import User
-from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
 
 
 def get_tokens_for_user(user):
@@ -43,7 +41,6 @@ class UserAuth(APIView):
 
 
         
-
 class UserView(APIView):
 
     def get(self, request):
@@ -74,3 +71,21 @@ class UserView(APIView):
                 return Response({'error': 'dados inválidos'}, status=status.HTTP_400_BAD_REQUEST)    
         else:
             return Response({'error': 'dados inválidos'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class UserScoreView(APIView):
+    def get(self, request):
+        ranking  = User.objects.all().order_by('-score')[:5]
+        serializer = UserRankingSerializer(ranking, many=True).data
+        return Response(serializer, status=status.HTTP_202_ACCEPTED)
+
+
+    def post(self, request):
+        if request.user:
+            userId = request.user.id
+            user = User.objects.get(id=userId)
+            user.score = user.score + 1
+            user.save()
+        return Response({'success': 'ok'}, status=status.HTTP_200_OK)
+

@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'users',
+    'news',
 
     'rest_framework',
     'rest_framework_simplejwt',

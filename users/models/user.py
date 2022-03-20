@@ -23,6 +23,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField('Ativo', default=True)
     date_joined = models.DateTimeField('Criado em', auto_now_add=True)
 
+    avatar = models.CharField(
+        verbose_name='Foto',
+        max_length=255,
+        null=True,
+        blank=True
+    )
+
+    score = models.PositiveIntegerField(
+        verbose_name='Score',
+        default=0
+    )
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
 
