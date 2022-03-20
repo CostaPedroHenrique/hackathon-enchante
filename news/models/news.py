@@ -7,7 +7,7 @@ class News(models.Model):
     )
 
     title = models.CharField(
-        verbose_name='Ritle',
+        verbose_name='Title',
         max_length=255,
     )
 
