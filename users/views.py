@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from users.api.serializers import UserSerializer
 from users.models import User
 from rest_framework import status
 
@@ -39,3 +40,19 @@ class UserAuth(APIView):
 
 
         
+
+class UserView(APIView):
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+
+        if serializer.is_valid():
+            try:
+                serializer = serializer.data
+                user: User = User.objects.create(**serializer)
+                user.set_password(serializer['password'])
+                user.save()
+                return Response(serializer, status=status.HTTP_201_CREATED)
+            except:
+                return Response({'error': 'dados inválidos'}, status=status.HTTP_400_BAD_REQUEST)    
+        else:
+            return Response({'error': 'dados inválidos'}, status=status.HTTP_400_BAD_REQUEST)
