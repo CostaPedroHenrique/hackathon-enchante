@@ -3,7 +3,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from users.api.serializers import UserSerializer
 from users.models import User
+from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
+
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -42,6 +45,21 @@ class UserAuth(APIView):
         
 
 class UserView(APIView):
+
+    def get(self, request):
+        if request.user.is_authenticated:
+
+
+            user = User.objects.get(id=request.user.id)
+            serializer = UserSerializer(user).data
+
+            serializer.pop('password')
+
+            return Response(serializer, status=status.HTTP_201_CREATED)
+
+        return Response({'error': 'usuário inválido'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
     def post(self, request):
         serializer = UserSerializer(data=request.data)
 
